@@ -11,7 +11,6 @@ import lettuce.hmccompose.data.sectioncontainer.SectionContainerViewData
 import lettuce.hmccompose.ui.component.ComplexText
 import lettuce.hmccompose.ui.component.FormControlTextBox
 import lettuce.hmccompose.ui.component.SectionContainer
-import lettuce.hmccompose.ui.component.sectionContainerPreviewData
 
 class ComponentAdapter {
     companion object {
@@ -22,19 +21,23 @@ class ComponentAdapter {
         ) {
             when (componentVD) {
                 is ComplexTextViewData -> {
-                    ComplexText(componentVD)
+                    ComplexText().Component(
+                        viewData = componentVD,
+                    )
                 }
                 is FormControlTextBoxViewData -> {
-                    FormControlTextBox(componentVD)
+                    FormControlTextBox().Component(
+                        viewData = componentVD,
+                    )
                 }
                 is GenericButtonViewData -> {
-                    GenericButton(
+                    GenericButton().Component(
                         viewData = componentVD,
                         onClick = onClickAction
                     )
                 }
                 is SectionContainerViewData -> {
-                    SectionContainer(
+                    SectionContainer().Component(
                         viewData = componentVD,
                         onClick = onClickAction
                     )

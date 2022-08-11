@@ -15,125 +15,124 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import lettuce.hmccompose.data.ActionViewData
 import lettuce.hmccompose.data.formcontroltextbox.FormControlTextBoxValidatorViewData
 import lettuce.hmccompose.data.formcontroltextbox.FormControlTextBoxViewData
+import lettuce.hmccompose.ui.component.generics.ComposableComponent
 import lettuce.hmccompose.ui.theme.*
 
+class FormControlTextBox : ComposableComponent<FormControlTextBoxViewData> {
+    @Composable
+    override fun Component(
+        viewData: FormControlTextBoxViewData
+    ) {
+        var text: String by rememberSaveable { mutableStateOf("") }
+        var errorMessage: String? by rememberSaveable { mutableStateOf(null) }
 
-@Composable
-fun FormControlTextBox(viewData: FormControlTextBoxViewData) {
-    var text: String by rememberSaveable { mutableStateOf("") }
-    var errorMessage: String? by rememberSaveable { mutableStateOf(null) }
-
-    fun validateText(text: String): String? {
-        for (validator in viewData.validators) {
-            when (validator.key) {
-                FormControlTextBoxValidatorViewData.KEY_REQUIRED -> {
-                    if (text.isEmpty()) {
-                        return validator.validationMessage
-                    }
-                }
-                FormControlTextBoxValidatorViewData.KEY_REGEX -> {
-                    validator.regex?.let {
-                        if (!text.matches(Regex(it))) {
+        fun validateText(text: String): String? {
+            for (validator in viewData.validators) {
+                when (validator.key) {
+                    FormControlTextBoxValidatorViewData.KEY_REQUIRED -> {
+                        if (text.isEmpty()) {
                             return validator.validationMessage
                         }
                     }
-                }
-                else -> {
-                    return null
+                    FormControlTextBoxValidatorViewData.KEY_REGEX -> {
+                        validator.regex?.let {
+                            if (!text.matches(Regex(it))) {
+                                return validator.validationMessage
+                            }
+                        }
+                    }
+                    else -> {
+                        return null
+                    }
                 }
             }
+            return null
         }
-        return null
+
+        StateLessComponent(
+            viewData, text, errorMessage
+        ) {
+            text = it
+            errorMessage = validateText(it)
+        }
     }
 
-    FormControlTextBoxStateless(
-        FormControlTextBoxPreview,
-        text,
-        errorMessage
+    @Composable
+    fun StateLessComponent(
+        viewData: FormControlTextBoxViewData,
+        textState: String,
+        errorMessageState: String?,
+        onValueChange: (String) -> Unit,
     ) {
-        text = it
-        errorMessage = validateText(it)
-    }
-}
-
-@Composable
-fun FormControlTextBoxStateless(
-    viewData: FormControlTextBoxViewData,
-    textState: String,
-    errorMessageState: String?,
-    onValueChange: (String) -> Unit,
-) {
-    Column {
-        viewData.label?.let {
-            Text(
-                text = it,
-                color = if (errorMessageState == null) TextColor else RedError,
-                style = FormControlTextBox_Label_Style,
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Start
-            )
-            Spacer(modifier = Modifier.height(6.dp))
-        }
-        TextField(
-            value = textState,
-            onValueChange = onValueChange,
-            shape = RoundedCornerShape(8.dp),
-            singleLine = true,
-            placeholder = {
+        Column {
+            viewData.label?.let {
                 Text(
-                    text = viewData.placeholder,
+                    text = it,
+                    color = if (errorMessageState == null) TextColor else RedError,
+                    style = FormControlTextBox_Label_Style,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Start
+                )
+                Spacer(modifier = Modifier.height(6.dp))
+            }
+            TextField(
+                value = textState,
+                onValueChange = onValueChange,
+                shape = RoundedCornerShape(8.dp),
+                singleLine = true,
+                placeholder = {
+                    Text(
+                        text = viewData.placeholder,
+                        style = FormControlTextBox_Placeholder_Style,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Start
+                    )
+                },
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.textFieldColors(
+                    backgroundColor = White,
+                    cursorColor = Black,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
+                )
+            )
+            errorMessageState?.let {
+                Spacer(modifier = Modifier.height(6.dp))
+                Text(
+                    text = it,
+                    color = RedError,
                     style = FormControlTextBox_Placeholder_Style,
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Start
                 )
-            },
-            modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = White,
-                cursorColor = Black,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent
-            )
-        )
-        errorMessageState?.let {
-            Spacer(modifier = Modifier.height(6.dp))
-            Text(
-                text = it,
-                color = RedError,
-                style = FormControlTextBox_Placeholder_Style,
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Start
-            )
+            }
         }
     }
-}
 
-@Preview(showBackground = true)
-@Composable
-fun FormControlTextBoxPreview() {
-    Box(
-        modifier = PreviewModifier
-    ) {
-        FormControlTextBox(FormControlTextBoxPreview)
-    }
-}
-
-val FormControlTextBoxPreview = FormControlTextBoxViewData(
-    label = "What's your car's registration?",
-    placeholder = "e.g. AAA123",
-    validators = listOf(
-        FormControlTextBoxValidatorViewData(
-            key = "required",
-            validationMessage = "Registration is required.",
-            config = ".+"
-        ),
-        FormControlTextBoxValidatorViewData(
-            key = "regex",
-            validationMessage = "Please enter a valid registration",
-            config = "^\$|^[a-zA-Z0-9- ]{1,9}\$",
-            regex = "^\$|^[a-zA-Z0-9- ]{1,9}\$"
+    override var previewViewData: FormControlTextBoxViewData? = FormControlTextBoxViewData(
+        label = "What's your car's registration?",
+        placeholder = "e.g. AAA123",
+        validators = listOf(
+            FormControlTextBoxValidatorViewData(
+                key = "required",
+                validationMessage = "Registration is required.",
+                config = ".+"
+            ),
+            FormControlTextBoxValidatorViewData(
+                key = "regex",
+                validationMessage = "Please enter a valid registration",
+                config = "^\$|^[a-zA-Z0-9- ]{1,9}\$",
+                regex = "^\$|^[a-zA-Z0-9- ]{1,9}\$"
+            )
         )
     )
-)
+
+    @Preview(showBackground = true)
+    @Composable
+    override fun ComponentPreview() {
+        super.ComponentPreview()
+    }
+}
