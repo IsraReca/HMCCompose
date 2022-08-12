@@ -112,27 +112,26 @@ class FormControlTextBox : ComposableComponent<FormControlTextBoxViewData> {
         }
     }
 
-    override var previewViewData: FormControlTextBoxViewData? = FormControlTextBoxViewData(
-        label = "What's your car's registration?",
-        placeholder = "e.g. AAA123",
-        validators = listOf(
-            FormControlTextBoxValidatorViewData(
-                key = "required",
-                validationMessage = "Registration is required.",
-                config = ".+"
-            ),
-            FormControlTextBoxValidatorViewData(
-                key = "regex",
-                validationMessage = "Please enter a valid registration",
-                config = "^\$|^[a-zA-Z0-9- ]{1,9}\$",
-                regex = "^\$|^[a-zA-Z0-9- ]{1,9}\$"
-            )
-        )
-    )
-
     @Preview(showBackground = true)
     @Composable
-    override fun ComponentPreview() {
-        super.ComponentPreview()
+    fun Preview() {
+        val previewViewData = FormControlTextBoxViewData(
+            label = "What's your car's registration?",
+            placeholder = "e.g. AAA123",
+            validators = listOf(
+                FormControlTextBoxValidatorViewData(
+                    key = "required",
+                    validationMessage = "Registration is required.",
+                    config = ".+"
+                ),
+                FormControlTextBoxValidatorViewData(
+                    key = "regex",
+                    validationMessage = "Please enter a valid registration",
+                    config = "^\$|^[a-zA-Z0-9- ]{1,9}\$",
+                    regex = "^\$|^[a-zA-Z0-9- ]{1,9}\$"
+                )
+            )
+        )
+        super.ComponentPreview(previewViewData)
     }
 }

@@ -5,14 +5,12 @@ import androidx.compose.runtime.Composable
 import lettuce.hmccompose.data.ComponentViewData
 import lettuce.hmccompose.ui.theme.PreviewModifier
 
-interface ComposableComponent<T> where T: ComponentViewData{
-    var previewViewData: T?
-
+interface ComposableComponent<T> where T : ComponentViewData {
     @Composable
     fun Component(viewData: T)
 
     @Composable
-    fun ComponentPreview() {
+    fun ComponentPreview(previewViewData: T?) {
         Box(
             modifier = PreviewModifier
         ) {

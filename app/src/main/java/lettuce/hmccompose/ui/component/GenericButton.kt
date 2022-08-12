@@ -43,15 +43,14 @@ class GenericButton : ComposableActionComponent<GenericButtonViewData> {
         }
     }
 
-    override var previewViewData: GenericButtonViewData? = GenericButtonViewData(
-        title = "Search by make or model",
-        stylingId = "primaryOutlineRoundedButton",
-        actionViewData = ActionViewData("test")
-    )
-
     @Preview(showBackground = true)
     @Composable
-    override fun ComponentPreview() {
-        super.ComponentPreview()
+    fun Preview() {
+        val previewViewData = GenericButtonViewData(
+            title = "Search by make or model",
+            stylingId = "primaryOutlineRoundedButton",
+            actionViewData = ActionViewData("test")
+        )
+        super.ComponentPreview(previewViewData)
     }
 }

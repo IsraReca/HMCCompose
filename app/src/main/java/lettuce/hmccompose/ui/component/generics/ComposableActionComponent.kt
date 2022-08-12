@@ -7,13 +7,11 @@ import lettuce.hmccompose.data.ComponentViewData
 import lettuce.hmccompose.ui.theme.PreviewModifier
 
 interface ComposableActionComponent<T> where T : ComponentViewData {
-    var previewViewData: T?
-
     @Composable
     fun Component(viewData: T, onClick: (actionVD: ActionViewData?) -> Unit)
 
     @Composable
-    fun ComponentPreview() {
+    fun ComponentPreview(previewViewData: T?) {
         Box(
             modifier = PreviewModifier
         ) {

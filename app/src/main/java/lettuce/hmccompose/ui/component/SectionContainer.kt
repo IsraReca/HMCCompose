@@ -27,28 +27,27 @@ class SectionContainer : ComposableActionComponent<SectionContainerViewData> {
         }
     }
 
-    override var previewViewData: SectionContainerViewData?  = SectionContainerViewData(
-        stylingId = "transparentSection",
-        items = listOf(
-            ComplexTextViewData(
-                isFormSection = false,
-                values = listOf(
-                    ComplexTextValueViewData(
-                        value = "Not sure of your car's registration?",
-                        stylingId = "cellHeaderText"
-                    )
-                )
-            ),
-            GenericButtonViewData(
-                title = "Search by make or model",
-                stylingId = "primaryOutlineRoundedButton",
-            )
-        )
-    )
-
     @Preview(showBackground = true)
     @Composable
-    override fun ComponentPreview() {
-        super.ComponentPreview()
+    fun Preview() {
+        val previewViewData = SectionContainerViewData(
+            stylingId = "transparentSection",
+            items = listOf(
+                ComplexTextViewData(
+                    isFormSection = false,
+                    values = listOf(
+                        ComplexTextValueViewData(
+                            value = "Not sure of your car's registration?",
+                            stylingId = "cellHeaderText"
+                        )
+                    )
+                ),
+                GenericButtonViewData(
+                    title = "Search by make or model",
+                    stylingId = "primaryOutlineRoundedButton",
+                )
+            )
+        )
+        super.ComponentPreview(previewViewData)
     }
 }
