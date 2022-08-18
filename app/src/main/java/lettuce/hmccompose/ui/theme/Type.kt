@@ -44,6 +44,31 @@ val FormControlTextBox_Placeholder_Style = TextStyle(
     fontSize = 12.sp
 )
 
+
+val GroupedOptions_Group_Style = TextStyle(
+    fontFamily = FontFamily.Default,
+    fontWeight = FontWeight.Bold,
+    fontSize = 14.sp
+)
+
+val GroupedOptions_Value_Style = TextStyle(
+    fontFamily = FontFamily.Default,
+    fontWeight = FontWeight.Normal,
+    fontSize = 12.sp
+)
+
+val GroupedOptions_SideGroup_Style = TextStyle(
+    fontFamily = FontFamily.Default,
+    fontWeight = FontWeight.Normal,
+    fontSize = 10.sp
+)
+
+val GroupedOptions_SelectedGroup_Style = TextStyle(
+    fontFamily = FontFamily.Default,
+    fontWeight = FontWeight.Bold,
+    fontSize = 36.sp
+)
+
 val FormControl_SelectText_Style = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.Bold,
