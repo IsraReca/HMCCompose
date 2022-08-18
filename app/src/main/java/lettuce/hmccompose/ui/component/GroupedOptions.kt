@@ -1,7 +1,8 @@
 package lettuce.hmccompose.ui.component
 
-import android.view.MotionEvent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -10,10 +11,9 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInteropFilter
+import androidx.compose.ui.input.pointer.*
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,7 +28,6 @@ import lettuce.hmccompose.ui.component.generics.ComposableComponent
 import lettuce.hmccompose.ui.theme.*
 
 class GroupedOptions : ComposableComponent<GroupedOptionsViewData> {
-    @OptIn(ExperimentalComposeUiApi::class)
     @Composable
     override fun Component(viewData: GroupedOptionsViewData) {
         fun getRowModifier(color: Color): Modifier {
@@ -97,39 +96,49 @@ class GroupedOptions : ComposableComponent<GroupedOptionsViewData> {
                     .onGloballyPositioned { coordinates ->
                         abcViewSize = coordinates.size
                     }
-                    .pointerInteropFilter {
-                        when (it.action) {
-                            MotionEvent.ACTION_DOWN -> {
+                    .pointerInput(Unit) {
+                        forEachGesture {
+                            awaitPointerEventScope {
+                                val firstTouch = awaitFirstDown()
+                                //Action Down
                                 abcViewSize?.let { abcSize ->
                                     getGroupIndexFromViewPosition(
                                         size = abcSize,
-                                        positionY = it.y,
+                                        positionY = firstTouch.position.y,
                                         numberOfGroups = viewData.groups.size
                                     )?.let { position ->
                                         selectedGroup = viewData.groups[position].group
                                         scrollToItem(position)
                                     }
                                 }
-                            }
-                            MotionEvent.ACTION_MOVE -> {
-                                if (checkIfInBounds(abcViewSize, it.x, it.y)) {
-                                    getGroupIndexFromViewPosition(
-                                        size = abcViewSize,
-                                        positionY = it.y,
-                                        numberOfGroups = viewData.groups.size
-                                    )?.let { position ->
-                                        selectedGroup = viewData.groups[position].group
-                                        scrollToItem(position)
+                                //Action Down End
+                                do {
+                                    val event: PointerEvent = awaitPointerEvent()
+                                    val eventPointer = event.changes[0].position
+                                    //Action Move
+                                    if (checkIfInBounds(abcViewSize, eventPointer.x, eventPointer.y)) {
+                                        getGroupIndexFromViewPosition(
+                                            size = abcViewSize,
+                                            positionY = eventPointer.y,
+                                            numberOfGroups = viewData.groups.size
+                                        )?.let { position ->
+                                            selectedGroup = viewData.groups[position].group
+                                            scrollToItem(position)
+                                        }
+                                    } else {
+                                        selectedGroup = null
                                     }
-                                } else {
-                                    selectedGroup = null
-                                }
-                            }
-                            MotionEvent.ACTION_UP -> {
+                                    //Action Move End
+                                    event.changes.forEach { pointerInputChange: PointerInputChange ->
+                                        pointerInputChange.consumePositionChange()
+                                    }
+                                } while (event.changes.any { it.pressed })
+
+                                // Action Up
                                 selectedGroup = null
+                                //Action Up End
                             }
                         }
-                        true
                     }
             ) {
                 for (group in viewData.groups) {
