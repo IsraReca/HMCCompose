@@ -5,6 +5,7 @@ import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
@@ -21,15 +22,15 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import lettuce.hmccompose.R
-import lettuce.hmccompose.data.groupedoptions.GroupedOptionsGroupDisplayValueViewData
-import lettuce.hmccompose.data.groupedoptions.GroupedOptionsGroupViewData
-import lettuce.hmccompose.data.groupedoptions.GroupedOptionsViewData
+import lettuce.hmccompose.data.groupedoptions.*
 import lettuce.hmccompose.ui.component.generics.ComposableComponent
 import lettuce.hmccompose.ui.theme.*
 
 class GroupedOptions : ComposableComponent<GroupedOptionsViewData> {
     @Composable
     override fun Component(viewData: GroupedOptionsViewData) {
+        val dataList = createDataList(viewData)
+        val filterList = createFilterList(viewData)
         fun getRowModifier(color: Color): Modifier {
             return Modifier
                 .fillMaxWidth()
@@ -55,25 +56,27 @@ class GroupedOptions : ComposableComponent<GroupedOptionsViewData> {
             LazyColumn(
                 state = listState
             ) {
-                items(viewData.groups.size) { index ->
-                    viewData.groups[index].let { group ->
-                        Row(
-                            modifier = getRowModifier(DarkGray),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = group.group,
-                                style = GroupedOptions_Group_Style,
-                                modifier = Modifier.weight(1.0f)
-                            )
+                items(dataList) { data ->
+                    when (data) {
+                        is GroupedOptionsListGroup -> {
+                            Row(
+                                modifier = getRowModifier(DarkGray),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = data.group,
+                                    style = GroupedOptions_Group_Style,
+                                    modifier = Modifier.weight(1.0f)
+                                )
+                            }
                         }
-                        for (value in group.options) {
+                        is GroupedOptionsListOptions -> {
                             Row(
                                 modifier = getRowModifier(ClearGray),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = value.display,
+                                    text = data.display,
                                     style = GroupedOptions_Value_Style,
                                     modifier = Modifier.weight(1.0f)
                                 )
@@ -84,6 +87,8 @@ class GroupedOptions : ComposableComponent<GroupedOptionsViewData> {
                                     tint = DarkGray,
                                 )
                             }
+                        }
+                        else -> {
                         }
                     }
                 }
@@ -107,8 +112,10 @@ class GroupedOptions : ComposableComponent<GroupedOptionsViewData> {
                                         positionY = firstTouch.position.y,
                                         numberOfGroups = viewData.groups.size
                                     )?.let { position ->
-                                        selectedGroup = viewData.groups[position].group
-                                        scrollToItem(position)
+                                        filterList[position].let { group ->
+                                            selectedGroup = group.group
+                                            scrollToItem(group.position)
+                                        }
                                     }
                                 }
                                 //Action Down End
@@ -116,14 +123,21 @@ class GroupedOptions : ComposableComponent<GroupedOptionsViewData> {
                                     val event: PointerEvent = awaitPointerEvent()
                                     val eventPointer = event.changes[0].position
                                     //Action Move
-                                    if (checkIfInBounds(abcViewSize, eventPointer.x, eventPointer.y)) {
+                                    if (checkIfInBounds(
+                                            abcViewSize,
+                                            eventPointer.x,
+                                            eventPointer.y
+                                        )
+                                    ) {
                                         getGroupIndexFromViewPosition(
                                             size = abcViewSize,
                                             positionY = eventPointer.y,
                                             numberOfGroups = viewData.groups.size
                                         )?.let { position ->
-                                            selectedGroup = viewData.groups[position].group
-                                            scrollToItem(position)
+                                            filterList[position].let { group ->
+                                                selectedGroup = group.group
+                                                scrollToItem(group.position)
+                                            }
                                         }
                                     } else {
                                         selectedGroup = null
@@ -141,7 +155,7 @@ class GroupedOptions : ComposableComponent<GroupedOptionsViewData> {
                         }
                     }
             ) {
-                for (group in viewData.groups) {
+                for (group in filterList) {
                     Text(
                         text = group.group,
                         style = GroupedOptions_SideGroup_Style,
@@ -172,7 +186,11 @@ class GroupedOptions : ComposableComponent<GroupedOptionsViewData> {
         }
     }
 
-    private fun checkIfInBounds(size: IntSize?, positionX: Float, positionY: Float): Boolean {
+    private fun checkIfInBounds(
+        size: IntSize?,
+        positionX: Float,
+        positionY: Float
+    ): Boolean {
         size?.let {
             return positionX > 0 && positionX <= size.width && positionY > 0 && positionY <= size.height
         }
@@ -192,6 +210,41 @@ class GroupedOptions : ComposableComponent<GroupedOptionsViewData> {
             }
         }
         return null
+    }
+
+    private fun createFilterList(viewData: GroupedOptionsViewData): List<GroupedOptionsFilterList> {
+        var pos = 0
+        val filterList = mutableListOf<GroupedOptionsFilterList>()
+        for (group in viewData.groups) {
+            pos += group.options.size + 1
+            filterList.add(
+                GroupedOptionsFilterList(
+                    group = group.group,
+                    position = pos
+                )
+            )
+        }
+        return filterList
+    }
+
+    private fun createDataList(viewData: GroupedOptionsViewData): List<GroupedOptionsList> {
+        val dataList = mutableListOf<GroupedOptionsList>()
+        for (group in viewData.groups) {
+            dataList.add(
+                GroupedOptionsListGroup(
+                    group = group.group
+                )
+            )
+            for (option in group.options) {
+                dataList.add(
+                    GroupedOptionsListOptions(
+                        display = option.display,
+                        value = option.value
+                    )
+                )
+            }
+        }
+        return dataList
     }
 
     companion object {
