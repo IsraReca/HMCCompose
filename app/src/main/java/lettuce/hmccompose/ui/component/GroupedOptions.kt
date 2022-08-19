@@ -22,13 +22,17 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import lettuce.hmccompose.R
+import lettuce.hmccompose.data.ActionViewData
 import lettuce.hmccompose.data.groupedoptions.*
 import lettuce.hmccompose.ui.component.generics.ComposableComponent
 import lettuce.hmccompose.ui.theme.*
 
 class GroupedOptions : ComposableComponent<GroupedOptionsViewData> {
     @Composable
-    override fun Component(viewData: GroupedOptionsViewData) {
+    override fun Component(
+        viewData: GroupedOptionsViewData,
+        onClick: ((actionVD: ActionViewData?) -> Unit)?
+    ) {
         var selectedGroupState: String? by rememberSaveable { mutableStateOf(null) }
 
         StateLessComponent(
@@ -198,7 +202,7 @@ class GroupedOptions : ComposableComponent<GroupedOptionsViewData> {
     @Composable
     fun PreviewComponentPreview() {
         Box {
-            Component(viewData = PREVIEW_VIEWDATA)
+            Component(viewData = PREVIEW_VIEWDATA, null)
         }
     }
 

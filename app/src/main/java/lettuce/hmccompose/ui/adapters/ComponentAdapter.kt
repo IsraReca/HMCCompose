@@ -19,17 +19,19 @@ class ComponentAdapter {
         @Composable
         fun getComponentByViewData(
             componentVD: ComponentViewData,
-            onClickAction: (actionVD: ActionViewData?) -> Unit
+            onClickAction: ((actionVD: ActionViewData?) -> Unit)?
         ) {
             when (componentVD) {
                 is ComplexTextViewData -> {
                     ComplexText().Component(
                         viewData = componentVD,
+                        null
                     )
                 }
                 is FormControlTextBoxViewData -> {
                     FormControlTextBox().Component(
                         viewData = componentVD,
+                        null
                     )
                 }
                 is GenericButtonViewData -> {
@@ -46,7 +48,8 @@ class ComponentAdapter {
                 }
                 is GroupedOptionsViewData -> {
                     GroupedOptions().Component(
-                        viewData = componentVD
+                        viewData = componentVD,
+                        null
                     )
                 }
                 else -> {}

@@ -24,7 +24,8 @@ import lettuce.hmccompose.ui.theme.*
 class FormControlTextBox : ComposableComponent<FormControlTextBoxViewData> {
     @Composable
     override fun Component(
-        viewData: FormControlTextBoxViewData
+        viewData: FormControlTextBoxViewData,
+        onClick: ((actionVD: ActionViewData?) -> Unit)?
     ) {
         var text: String by rememberSaveable { mutableStateOf("") }
         var errorMessage: String? by rememberSaveable { mutableStateOf(null) }

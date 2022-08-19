@@ -10,13 +10,13 @@ import lettuce.hmccompose.data.complextext.ComplexTextViewData
 import lettuce.hmccompose.data.genericbutton.GenericButtonViewData
 import lettuce.hmccompose.data.sectioncontainer.SectionContainerViewData
 import lettuce.hmccompose.ui.adapters.ComponentAdapter
-import lettuce.hmccompose.ui.component.generics.ComposableActionComponent
+import lettuce.hmccompose.ui.component.generics.ComposableComponent
 
-class SectionContainer : ComposableActionComponent<SectionContainerViewData> {
+class SectionContainer : ComposableComponent<SectionContainerViewData> {
     @Composable
     override fun Component(
         viewData: SectionContainerViewData,
-        onClick: (actionVD: ActionViewData?) -> Unit
+        onClick: ((actionVD: ActionViewData?) -> Unit)?
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(6.dp)

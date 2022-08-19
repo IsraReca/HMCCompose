@@ -14,19 +14,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import lettuce.hmccompose.data.ActionViewData
 import lettuce.hmccompose.data.genericbutton.GenericButtonViewData
-import lettuce.hmccompose.ui.component.generics.ComposableActionComponent
+import lettuce.hmccompose.ui.component.generics.ComposableComponent
 import lettuce.hmccompose.ui.theme.Blue
 import lettuce.hmccompose.ui.theme.GenericButton_Style
 
-class GenericButton : ComposableActionComponent<GenericButtonViewData> {
+class GenericButton : ComposableComponent<GenericButtonViewData> {
     @Composable
     override fun Component(
         viewData: GenericButtonViewData,
-        onClick: (actionVD: ActionViewData?) -> Unit
+        onClick: ((actionVD: ActionViewData?) -> Unit)?
     ) {
         OutlinedButton(
             onClick = {
-                onClick.invoke(viewData.actionViewData)
+                onClick?.invoke(viewData.actionViewData)
             },
             modifier = Modifier
                 .fillMaxWidth()
