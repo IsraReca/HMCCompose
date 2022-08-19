@@ -29,8 +29,35 @@ import lettuce.hmccompose.ui.theme.*
 class GroupedOptions : ComposableComponent<GroupedOptionsViewData> {
     @Composable
     override fun Component(viewData: GroupedOptionsViewData) {
+        var selectedGroupState: String? by rememberSaveable { mutableStateOf(null) }
+
+        StateLessComponent(
+            viewData = viewData,
+            selectedGroupState = selectedGroupState,
+            onSelectedGroupChange = {
+                selectedGroupState = it
+            }
+        )
+    }
+
+    @Composable
+    fun StateLessComponent(
+        viewData: GroupedOptionsViewData,
+        selectedGroupState: String?,
+        onSelectedGroupChange: (String?) -> Unit
+    ) {
         val dataList = createDataList(viewData)
         val filterList = createFilterList(viewData)
+        val listState = rememberLazyListState()
+        var filterViewSizeState: IntSize? = null
+
+        val coroutineScope = rememberCoroutineScope()
+        fun scrollToItem(position: Int) {
+            coroutineScope.launch {
+                listState.scrollToItem(index = position)
+            }
+        }
+
         fun getRowModifier(color: Color): Modifier {
             return Modifier
                 .fillMaxWidth()
@@ -42,16 +69,6 @@ class GroupedOptions : ComposableComponent<GroupedOptionsViewData> {
                 )
         }
 
-        var selectedGroup: String? by rememberSaveable { mutableStateOf(null) }
-        var abcViewSize: IntSize? by rememberSaveable { mutableStateOf(null) }
-        val listState = rememberLazyListState()
-        val coroutineScope = rememberCoroutineScope()
-
-        fun scrollToItem(position: Int) {
-            coroutineScope.launch {
-                listState.scrollToItem(index = position)
-            }
-        }
         Box() {
             LazyColumn(
                 state = listState
@@ -99,21 +116,21 @@ class GroupedOptions : ComposableComponent<GroupedOptionsViewData> {
                     .background(DarkGray)
                     .align(Alignment.CenterEnd)
                     .onGloballyPositioned { coordinates ->
-                        abcViewSize = coordinates.size
+                        filterViewSizeState = coordinates.size
                     }
                     .pointerInput(Unit) {
                         forEachGesture {
                             awaitPointerEventScope {
                                 val firstTouch = awaitFirstDown()
                                 //Action Down
-                                abcViewSize?.let { abcSize ->
+                                filterViewSizeState?.let { abcSize ->
                                     getGroupIndexFromViewPosition(
                                         size = abcSize,
                                         positionY = firstTouch.position.y,
-                                        numberOfGroups = viewData.groups.size
+                                        numberOfGroups = filterList.size
                                     )?.let { position ->
                                         filterList[position].let { group ->
-                                            selectedGroup = group.group
+                                            onSelectedGroupChange(group.group)
                                             scrollToItem(group.position)
                                         }
                                     }
@@ -124,23 +141,23 @@ class GroupedOptions : ComposableComponent<GroupedOptionsViewData> {
                                     val eventPointer = event.changes[0].position
                                     //Action Move
                                     if (checkIfInBounds(
-                                            abcViewSize,
+                                            filterViewSizeState,
                                             eventPointer.x,
                                             eventPointer.y
                                         )
                                     ) {
                                         getGroupIndexFromViewPosition(
-                                            size = abcViewSize,
+                                            size = filterViewSizeState,
                                             positionY = eventPointer.y,
-                                            numberOfGroups = viewData.groups.size
+                                            numberOfGroups = filterList.size
                                         )?.let { position ->
                                             filterList[position].let { group ->
-                                                selectedGroup = group.group
+                                                onSelectedGroupChange(group.group)
                                                 scrollToItem(group.position)
                                             }
                                         }
                                     } else {
-                                        selectedGroup = null
+                                        onSelectedGroupChange(null)
                                     }
                                     //Action Move End
                                     event.changes.forEach { pointerInputChange: PointerInputChange ->
@@ -149,7 +166,7 @@ class GroupedOptions : ComposableComponent<GroupedOptionsViewData> {
                                 } while (event.changes.any { it.pressed })
 
                                 // Action Up
-                                selectedGroup = null
+                                onSelectedGroupChange(null)
                                 //Action Up End
                             }
                         }
@@ -166,7 +183,7 @@ class GroupedOptions : ComposableComponent<GroupedOptionsViewData> {
                     )
                 }
             }
-            selectedGroup?.let {
+            selectedGroupState?.let {
                 Text(
                     text = it,
                     style = GroupedOptions_SelectedGroup_Style,
@@ -180,7 +197,6 @@ class GroupedOptions : ComposableComponent<GroupedOptionsViewData> {
     @Preview(showBackground = true)
     @Composable
     fun PreviewComponentPreview() {
-
         Box {
             Component(viewData = PREVIEW_VIEWDATA)
         }
