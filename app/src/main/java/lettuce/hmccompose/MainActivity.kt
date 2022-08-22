@@ -20,7 +20,7 @@ import lettuce.hmccompose.data.complextext.ComplexTextValueViewData
 import lettuce.hmccompose.data.complextext.ComplexTextViewData
 import lettuce.hmccompose.data.formcontroltextbox.FormControlTextBoxValidatorViewData
 import lettuce.hmccompose.data.formcontroltextbox.FormControlTextBoxViewData
-import lettuce.hmccompose.data.genericbutton.GenericButtonViewData
+import lettuce.hmccompose.data.genericbutton.ButtonViewData
 import lettuce.hmccompose.data.sectioncontainer.SectionContainerViewData
 import lettuce.hmccompose.ui.adapters.ComponentAdapter
 import lettuce.hmccompose.ui.component.GroupedOptions
@@ -47,7 +47,7 @@ fun DefaultPreview() {
                 modifier = Modifier.padding(12.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                for (component in previewDataList) {
+                for (component in previewData) {
                     ComponentAdapter.getComponentByViewData(component) { actionVD ->
                         actionVD?.let {
                             Toast.makeText(context, it.actionType, Toast.LENGTH_SHORT).show()
@@ -102,12 +102,12 @@ val previewData = listOf<ComponentViewData>(
                     )
                 )
             ),
-            GenericButtonViewData(
+            ButtonViewData(
                 title = "Test A Button",
                 stylingId = "primaryOutlineRoundedButton",
                 actionViewData = ActionViewData("testA")
             ),
-            GenericButtonViewData(
+            ButtonViewData(
                 title = "Test B Button",
                 stylingId = "primaryOutlineRoundedButton",
                 actionViewData = ActionViewData("testB")
