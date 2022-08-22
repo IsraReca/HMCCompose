@@ -21,8 +21,11 @@ class ComplexText : ComposableComponent<ComplexTextViewData> {
         Column {
             for (value in viewData.values) {
                 Text(
-                    text = value.value,
-                    style = StyleAdapter.getStyleById(value.stylingId),
+                    text = value.value ?: "",
+                    style = StyleAdapter.getStyleById(
+                        value.stylingId,
+                        value.type
+                    ),
                     modifier = Modifier.fillMaxWidth()
                 )
             }
