@@ -23,7 +23,7 @@ import lettuce.hmccompose.data.formcontroltextbox.FormControlTextBoxViewData
 import lettuce.hmccompose.data.genericbutton.ButtonViewData
 import lettuce.hmccompose.data.sectioncontainer.SectionContainerViewData
 import lettuce.hmccompose.ui.adapters.ComponentManager
-import lettuce.hmccompose.ui.component.GroupedOptionsExtras
+import lettuce.hmccompose.ui.component.fastscroll.GroupedOptionsExtras
 import lettuce.hmccompose.ui.theme.Gray
 import lettuce.hmccompose.ui.theme.HMCComposeTheme
 

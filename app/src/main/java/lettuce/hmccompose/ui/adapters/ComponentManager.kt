@@ -8,11 +8,11 @@ import lettuce.hmccompose.data.formcontroltextbox.FormControlTextBoxViewData
 import lettuce.hmccompose.data.genericbutton.ButtonViewData
 import lettuce.hmccompose.data.groupedoptions.GroupedOptionsViewData
 import lettuce.hmccompose.data.sectioncontainer.SectionContainerViewData
-import lettuce.hmccompose.ui.component.ComplexText
-import lettuce.hmccompose.ui.component.FormControlTextBox
-import lettuce.hmccompose.ui.component.GroupedOptions
 import lettuce.hmccompose.ui.component.SectionContainer
 import lettuce.hmccompose.ui.component.button.ButtonComponentManager
+import lettuce.hmccompose.ui.component.edittext.FormControlTextBox
+import lettuce.hmccompose.ui.component.fastscroll.GroupedOptions
+import lettuce.hmccompose.ui.component.text.ComplexText
 
 class ComponentManager {
     companion object {
