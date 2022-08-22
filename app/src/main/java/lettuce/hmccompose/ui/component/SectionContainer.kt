@@ -7,7 +7,7 @@ import androidx.compose.ui.unit.dp
 import lettuce.hmccompose.data.ActionViewData
 import lettuce.hmccompose.data.complextext.ComplexTextValueViewData
 import lettuce.hmccompose.data.complextext.ComplexTextViewData
-import lettuce.hmccompose.data.genericbutton.GenericButtonViewData
+import lettuce.hmccompose.data.genericbutton.ButtonViewData
 import lettuce.hmccompose.data.sectioncontainer.SectionContainerViewData
 import lettuce.hmccompose.ui.adapters.ComponentAdapter
 import lettuce.hmccompose.ui.component.generics.ComposableComponent
@@ -42,7 +42,7 @@ class SectionContainer : ComposableComponent<SectionContainerViewData> {
                         )
                     )
                 ),
-                GenericButtonViewData(
+                ButtonViewData(
                     title = "Search by make or model",
                     stylingId = "primaryOutlineRoundedButton",
                 )

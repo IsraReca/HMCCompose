@@ -1,4 +1,4 @@
-package lettuce.hmccompose.ui.component
+package lettuce.hmccompose.ui.component.button
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.defaultMinSize
@@ -13,15 +13,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import lettuce.hmccompose.data.ActionViewData
-import lettuce.hmccompose.data.genericbutton.GenericButtonViewData
+import lettuce.hmccompose.data.genericbutton.ButtonViewData
 import lettuce.hmccompose.ui.component.generics.ComposableComponent
 import lettuce.hmccompose.ui.theme.Blue
 import lettuce.hmccompose.ui.theme.GenericButton_Style
 
-class GenericButton : ComposableComponent<GenericButtonViewData> {
+class OutlinedRoundedButtonComponent : ComposableComponent<ButtonViewData> {
     @Composable
     override fun Component(
-        viewData: GenericButtonViewData,
+        viewData: ButtonViewData,
         onClick: ((actionVD: ActionViewData?) -> Unit)?
     ) {
         OutlinedButton(
@@ -46,7 +46,7 @@ class GenericButton : ComposableComponent<GenericButtonViewData> {
     @Preview(showBackground = true)
     @Composable
     override fun Preview() {
-        val previewViewData = GenericButtonViewData(
+        val previewViewData = ButtonViewData(
             title = "Search by make or model",
             stylingId = "primaryOutlineRoundedButton",
             actionViewData = ActionViewData("test")
