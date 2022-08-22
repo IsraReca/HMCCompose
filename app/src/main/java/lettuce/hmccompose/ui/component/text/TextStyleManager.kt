@@ -1,4 +1,4 @@
-package lettuce.hmccompose.ui.adapters
+package lettuce.hmccompose.ui.component.text
 
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -9,7 +9,7 @@ import lettuce.hmccompose.ui.theme.*
 import lettuce.hmccompose.ui.theme.Default_Style
 import lettuce.hmccompose.ui.theme.Font
 
-class StyleAdapter {
+class TextStyleManager {
     companion object {
         fun getStyleById(
             styleId: String?,

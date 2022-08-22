@@ -9,7 +9,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import lettuce.hmccompose.data.ActionViewData
 import lettuce.hmccompose.data.complextext.ComplexTextValueViewData
 import lettuce.hmccompose.data.complextext.ComplexTextViewData
-import lettuce.hmccompose.ui.adapters.StyleAdapter
 
 @Composable
 fun ComplexText(
@@ -20,7 +19,7 @@ fun ComplexText(
         for (value in viewData.values) {
             Text(
                 text = value.value ?: "",
-                style = StyleAdapter.getStyleById(
+                style = TextStyleManager.getStyleById(
                     value.stylingId,
                     value.type
                 ),
