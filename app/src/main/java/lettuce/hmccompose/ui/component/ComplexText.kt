@@ -31,7 +31,7 @@ class ComplexText : ComposableComponent<ComplexTextViewData> {
 
     @Preview(showBackground = true)
     @Composable
-    fun Preview() {
+    override fun Preview() {
         val previewViewData = ComplexTextViewData(
             isFormSection = false,
             values = listOf(
@@ -41,6 +41,6 @@ class ComplexText : ComposableComponent<ComplexTextViewData> {
                 )
             )
         )
-        super.ComponentPreview(previewViewData)
+        Component(previewViewData, null)
     }
 }

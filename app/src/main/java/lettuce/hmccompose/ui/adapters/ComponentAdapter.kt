@@ -1,7 +1,7 @@
 package lettuce.hmccompose.ui.adapters
 
 import androidx.compose.runtime.Composable
-import lettuce.hmccompose.GenericButton
+import lettuce.hmccompose.ui.component.GenericButton
 import lettuce.hmccompose.data.ActionViewData
 import lettuce.hmccompose.data.ComponentViewData
 import lettuce.hmccompose.data.complextext.ComplexTextViewData

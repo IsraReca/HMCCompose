@@ -29,7 +29,7 @@ class SectionContainer : ComposableComponent<SectionContainerViewData> {
 
     @Preview(showBackground = true)
     @Composable
-    fun Preview() {
+    override fun Preview() {
         val previewViewData = SectionContainerViewData(
             stylingId = "transparentSection",
             items = listOf(
@@ -48,6 +48,6 @@ class SectionContainer : ComposableComponent<SectionContainerViewData> {
                 )
             )
         )
-        super.ComponentPreview(previewViewData)
+        Component(previewViewData, null)
     }
 }

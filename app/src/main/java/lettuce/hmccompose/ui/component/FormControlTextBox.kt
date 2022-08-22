@@ -115,7 +115,7 @@ class FormControlTextBox : ComposableComponent<FormControlTextBoxViewData> {
 
     @Preview(showBackground = true)
     @Composable
-    fun Preview() {
+    override fun Preview() {
         val previewViewData = FormControlTextBoxViewData(
             label = "What's your car's registration?",
             placeholder = "e.g. AAA123",
@@ -133,6 +133,6 @@ class FormControlTextBox : ComposableComponent<FormControlTextBoxViewData> {
                 )
             )
         )
-        super.ComponentPreview(previewViewData)
+        Component(previewViewData, null)
     }
 }

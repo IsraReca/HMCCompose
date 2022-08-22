@@ -1,4 +1,4 @@
-package lettuce.hmccompose
+package lettuce.hmccompose.ui.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.defaultMinSize
@@ -45,12 +45,12 @@ class GenericButton : ComposableComponent<GenericButtonViewData> {
 
     @Preview(showBackground = true)
     @Composable
-    fun Preview() {
+    override fun Preview() {
         val previewViewData = GenericButtonViewData(
             title = "Search by make or model",
             stylingId = "primaryOutlineRoundedButton",
             actionViewData = ActionViewData("test")
         )
-        super.ComponentPreview(previewViewData)
+        Component(previewViewData, null)
     }
 }

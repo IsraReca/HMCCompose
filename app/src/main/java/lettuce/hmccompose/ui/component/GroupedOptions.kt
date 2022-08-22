@@ -200,10 +200,8 @@ class GroupedOptions : ComposableComponent<GroupedOptionsViewData> {
 
     @Preview(showBackground = true)
     @Composable
-    fun PreviewComponentPreview() {
-        Box {
-            Component(viewData = PREVIEW_VIEWDATA, null)
-        }
+    override fun Preview() {
+        Component(PREVIEW_VIEWDATA, null)
     }
 
     private fun checkIfInBounds(
