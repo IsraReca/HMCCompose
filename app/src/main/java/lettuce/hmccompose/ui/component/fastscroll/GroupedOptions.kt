@@ -1,4 +1,4 @@
-package lettuce.hmccompose.ui.component
+package lettuce.hmccompose.ui.component.fastscroll
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitFirstDown
@@ -22,115 +22,133 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import lettuce.hmccompose.R
-import lettuce.hmccompose.data.ActionViewData
 import lettuce.hmccompose.data.groupedoptions.*
-import lettuce.hmccompose.ui.component.generics.ComposableComponent
 import lettuce.hmccompose.ui.theme.*
 
-class GroupedOptions : ComposableComponent<GroupedOptionsViewData> {
-    @Composable
-    override fun Component(
-        viewData: GroupedOptionsViewData,
-        onClick: ((actionVD: ActionViewData?) -> Unit)?
-    ) {
-        var selectedGroupState: String? by rememberSaveable { mutableStateOf(null) }
+@Composable
+fun GroupedOptions(
+    viewData: GroupedOptionsViewData
+) {
+    var selectedGroupState: String? by rememberSaveable { mutableStateOf(null) }
 
-        StateLessComponent(
-            viewData = viewData,
-            selectedGroupState = selectedGroupState,
-            onSelectedGroupChange = {
-                selectedGroupState = it
-            }
-        )
+    GroupedOptionsStateless(
+        viewData = viewData,
+        selectedGroupState = selectedGroupState,
+        onSelectedGroupChange = {
+            selectedGroupState = it
+        }
+    )
+}
+
+@Composable
+fun GroupedOptionsStateless(
+    viewData: GroupedOptionsViewData,
+    selectedGroupState: String?,
+    onSelectedGroupChange: (String?) -> Unit
+) {
+    val dataList = GroupedOptionsExtras.createDataList(viewData)
+    val filterList = GroupedOptionsExtras.createFilterList(viewData)
+    val listState = rememberLazyListState()
+    var filterViewSizeState: IntSize? = null
+
+    val coroutineScope = rememberCoroutineScope()
+    fun scrollToItem(position: Int) {
+        coroutineScope.launch {
+            listState.scrollToItem(index = position)
+        }
     }
 
-    @Composable
-    fun StateLessComponent(
-        viewData: GroupedOptionsViewData,
-        selectedGroupState: String?,
-        onSelectedGroupChange: (String?) -> Unit
-    ) {
-        val dataList = createDataList(viewData)
-        val filterList = createFilterList(viewData)
-        val listState = rememberLazyListState()
-        var filterViewSizeState: IntSize? = null
+    fun getRowModifier(color: Color): Modifier {
+        return Modifier
+            .fillMaxWidth()
+            .background(color = color)
+            .height(45.dp)
+            .padding(
+                start = 12.dp,
+                end = 12.dp
+            )
+    }
 
-        val coroutineScope = rememberCoroutineScope()
-        fun scrollToItem(position: Int) {
-            coroutineScope.launch {
-                listState.scrollToItem(index = position)
-            }
-        }
-
-        fun getRowModifier(color: Color): Modifier {
-            return Modifier
-                .fillMaxWidth()
-                .background(color = color)
-                .height(45.dp)
-                .padding(
-                    start = 12.dp,
-                    end = 12.dp
-                )
-        }
-
-        Box() {
-            LazyColumn(
-                state = listState
-            ) {
-                items(dataList) { data ->
-                    when (data) {
-                        is GroupedOptionsListGroup -> {
-                            Row(
-                                modifier = getRowModifier(DarkGray),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = data.group,
-                                    style = GroupedOptions_Group_Style,
-                                    modifier = Modifier.weight(1.0f)
-                                )
-                            }
+    Box() {
+        LazyColumn(
+            state = listState
+        ) {
+            items(dataList) { data ->
+                when (data) {
+                    is GroupedOptionsListGroup -> {
+                        Row(
+                            modifier = getRowModifier(DarkGray),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = data.group,
+                                style = GroupedOptions_Group_Style,
+                                modifier = Modifier.weight(1.0f)
+                            )
                         }
-                        is GroupedOptionsListOptions -> {
-                            Row(
-                                modifier = getRowModifier(ClearGray),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = data.display,
-                                    style = GroupedOptions_Value_Style,
-                                    modifier = Modifier.weight(1.0f)
-                                )
+                    }
+                    is GroupedOptionsListOptions -> {
+                        Row(
+                            modifier = getRowModifier(ClearGray),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = data.display,
+                                style = GroupedOptions_Value_Style,
+                                modifier = Modifier.weight(1.0f)
+                            )
 
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_baseline_arrow_forward_ios_24),
-                                    contentDescription = null,
-                                    tint = DarkGray,
-                                )
-                            }
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_baseline_arrow_forward_ios_24),
+                                contentDescription = null,
+                                tint = DarkGray,
+                            )
                         }
-                        else -> {
-                        }
+                    }
+                    else -> {
                     }
                 }
             }
-            Column(
-                modifier = Modifier
-                    .wrapContentHeight()
-                    .background(DarkGray)
-                    .align(Alignment.CenterEnd)
-                    .onGloballyPositioned { coordinates ->
-                        filterViewSizeState = coordinates.size
-                    }
-                    .pointerInput(Unit) {
-                        forEachGesture {
-                            awaitPointerEventScope {
-                                val firstTouch = awaitFirstDown()
-                                //Action Down
-                                filterViewSizeState?.let { abcSize ->
-                                    getGroupIndexFromViewPosition(
-                                        size = abcSize,
-                                        positionY = firstTouch.position.y,
+        }
+        Column(
+            modifier = Modifier
+                .wrapContentHeight()
+                .background(DarkGray)
+                .align(Alignment.CenterEnd)
+                .onGloballyPositioned { coordinates ->
+                    filterViewSizeState = coordinates.size
+                }
+                .pointerInput(Unit) {
+                    forEachGesture {
+                        awaitPointerEventScope {
+                            val firstTouch = awaitFirstDown()
+                            //Action Down
+                            filterViewSizeState?.let { abcSize ->
+                                GroupedOptionsExtras.getGroupIndexFromViewPosition(
+                                    size = abcSize,
+                                    positionY = firstTouch.position.y,
+                                    numberOfGroups = filterList.size
+                                )?.let { position ->
+                                    filterList[position].let { group ->
+                                        onSelectedGroupChange(group.group)
+                                        scrollToItem(group.position)
+                                    }
+                                }
+                            }
+                            //Action Down End
+                            do {
+                                val event: PointerEvent = awaitPointerEvent()
+                                val eventPointer = event.changes[0].position
+                                //Action Move
+                                if (GroupedOptionsExtras.checkIfInBounds(
+                                        filterViewSizeState,
+                                        eventPointer.x,
+                                        eventPointer.y
+                                    )
+                                ) {
+                                    GroupedOptionsExtras.getGroupIndexFromViewPosition(
+                                        size = filterViewSizeState,
+                                        positionY = eventPointer.y,
                                         numberOfGroups = filterList.size
                                     )?.let { position ->
                                         filterList[position].let { group ->
@@ -138,134 +156,114 @@ class GroupedOptions : ComposableComponent<GroupedOptionsViewData> {
                                             scrollToItem(group.position)
                                         }
                                     }
+                                } else {
+                                    onSelectedGroupChange(null)
                                 }
-                                //Action Down End
-                                do {
-                                    val event: PointerEvent = awaitPointerEvent()
-                                    val eventPointer = event.changes[0].position
-                                    //Action Move
-                                    if (checkIfInBounds(
-                                            filterViewSizeState,
-                                            eventPointer.x,
-                                            eventPointer.y
-                                        )
-                                    ) {
-                                        getGroupIndexFromViewPosition(
-                                            size = filterViewSizeState,
-                                            positionY = eventPointer.y,
-                                            numberOfGroups = filterList.size
-                                        )?.let { position ->
-                                            filterList[position].let { group ->
-                                                onSelectedGroupChange(group.group)
-                                                scrollToItem(group.position)
-                                            }
-                                        }
-                                    } else {
-                                        onSelectedGroupChange(null)
-                                    }
-                                    //Action Move End
-                                    event.changes.forEach { pointerInputChange: PointerInputChange ->
-                                        pointerInputChange.consumePositionChange()
-                                    }
-                                } while (event.changes.any { it.pressed })
+                                //Action Move End
+                                event.changes.forEach { pointerInputChange: PointerInputChange ->
+                                    pointerInputChange.consumePositionChange()
+                                }
+                            } while (event.changes.any { it.pressed })
 
-                                // Action Up
-                                onSelectedGroupChange(null)
-                                //Action Up End
-                            }
+                            // Action Up
+                            onSelectedGroupChange(null)
+                            //Action Up End
                         }
                     }
-            ) {
-                for (group in filterList) {
-                    Text(
-                        text = group.group,
-                        style = GroupedOptions_SideGroup_Style,
-                        color = HighlightBlue,
-                        modifier = Modifier
-                            .padding(3.dp)
+                }
+        ) {
+            for (group in filterList) {
+                Text(
+                    text = group.group,
+                    style = GroupedOptions_SideGroup_Style,
+                    color = HighlightBlue,
+                    modifier = Modifier
+                        .padding(3.dp)
 
+                )
+            }
+        }
+        selectedGroupState?.let {
+            Text(
+                text = it,
+                style = GroupedOptions_SelectedGroup_Style,
+                color = HighlightBlue,
+                modifier = Modifier.align(Alignment.Center)
+            )
+        }
+    }
+}
+
+class GroupedOptionsExtras {
+    companion object {
+
+        @Preview(showBackground = true)
+        @Composable
+        fun GroupedOptionsPreview() {
+            GroupedOptions(PREVIEW_VIEWDATA)
+        }
+
+        fun checkIfInBounds(
+            size: IntSize?,
+            positionX: Float,
+            positionY: Float
+        ): Boolean {
+            size?.let {
+                return positionX > 0 && positionX <= size.width && positionY > 0 && positionY <= size.height
+            }
+            return false
+        }
+
+        fun getGroupIndexFromViewPosition(
+            size: IntSize?,
+            positionY: Float,
+            numberOfGroups: Int
+        ): Int? {
+            size?.let {
+                val segmentHeight: Int = size.height / numberOfGroups
+                val position = positionY.toInt() / segmentHeight
+                if (position in 0..numberOfGroups) {
+                    return position
+                }
+            }
+            return null
+        }
+
+        fun createFilterList(viewData: GroupedOptionsViewData): List<GroupedOptionsFilterList> {
+            var pos = 0
+            val filterList = mutableListOf<GroupedOptionsFilterList>()
+            for (group in viewData.groups) {
+                pos += group.options.size + 1
+                filterList.add(
+                    GroupedOptionsFilterList(
+                        group = group.group,
+                        position = pos
+                    )
+                )
+            }
+            return filterList
+        }
+
+        fun createDataList(viewData: GroupedOptionsViewData): List<GroupedOptionsList> {
+            val dataList = mutableListOf<GroupedOptionsList>()
+            for (group in viewData.groups) {
+                dataList.add(
+                    GroupedOptionsListGroup(
+                        group = group.group
+                    )
+                )
+                for (option in group.options) {
+                    dataList.add(
+                        GroupedOptionsListOptions(
+                            display = option.display,
+                            value = option.value
+                        )
                     )
                 }
             }
-            selectedGroupState?.let {
-                Text(
-                    text = it,
-                    style = GroupedOptions_SelectedGroup_Style,
-                    color = HighlightBlue,
-                    modifier = Modifier.align(Alignment.Center)
-                )
-            }
+            return dataList
         }
-    }
 
-    @Preview(showBackground = true)
-    @Composable
-    override fun Preview() {
-        Component(PREVIEW_VIEWDATA, null)
-    }
-
-    private fun checkIfInBounds(
-        size: IntSize?,
-        positionX: Float,
-        positionY: Float
-    ): Boolean {
-        size?.let {
-            return positionX > 0 && positionX <= size.width && positionY > 0 && positionY <= size.height
-        }
-        return false
-    }
-
-    private fun getGroupIndexFromViewPosition(
-        size: IntSize?,
-        positionY: Float,
-        numberOfGroups: Int
-    ): Int? {
-        size?.let {
-            val segmentHeight: Int = size.height / numberOfGroups
-            val position = positionY.toInt() / segmentHeight
-            if (position in 0..numberOfGroups) {
-                return position
-            }
-        }
-        return null
-    }
-
-    private fun createFilterList(viewData: GroupedOptionsViewData): List<GroupedOptionsFilterList> {
-        var pos = 0
-        val filterList = mutableListOf<GroupedOptionsFilterList>()
-        for (group in viewData.groups) {
-            pos += group.options.size + 1
-            filterList.add(
-                GroupedOptionsFilterList(
-                    group = group.group,
-                    position = pos
-                )
-            )
-        }
-        return filterList
-    }
-
-    private fun createDataList(viewData: GroupedOptionsViewData): List<GroupedOptionsList> {
-        val dataList = mutableListOf<GroupedOptionsList>()
-        for (group in viewData.groups) {
-            dataList.add(
-                GroupedOptionsListGroup(
-                    group = group.group
-                )
-            )
-            for (option in group.options) {
-                dataList.add(
-                    GroupedOptionsListOptions(
-                        display = option.display,
-                        value = option.value
-                    )
-                )
-            }
-        }
-        return dataList
-    }
-
-    companion object {
         val PREVIEW_VIEWDATA = GroupedOptionsViewData(
             groups = listOf(
                 GroupedOptionsGroupViewData(

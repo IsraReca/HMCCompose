@@ -12,44 +12,42 @@ import lettuce.hmccompose.ui.component.ComplexText
 import lettuce.hmccompose.ui.component.FormControlTextBox
 import lettuce.hmccompose.ui.component.GroupedOptions
 import lettuce.hmccompose.ui.component.SectionContainer
-import lettuce.hmccompose.ui.component.button.ButtonComponent
+import lettuce.hmccompose.ui.component.button.ButtonComponentManager
 
-class ComponentAdapter {
+class ComponentManager {
     companion object {
         @Composable
-        fun getComponentByViewData(
+        fun ComponentByViewData(
             componentVD: ComponentViewData,
             onClickAction: ((actionVD: ActionViewData?) -> Unit)?
         ) {
             when (componentVD) {
                 is ComplexTextViewData -> {
-                    ComplexText().Component(
+                    ComplexText(
                         viewData = componentVD,
                         null
                     )
                 }
                 is FormControlTextBoxViewData -> {
-                    FormControlTextBox().Component(
-                        viewData = componentVD,
-                        null
+                    FormControlTextBox(
+                        viewData = componentVD
                     )
                 }
                 is ButtonViewData -> {
-                    ButtonComponent().Component(
-                        viewData = componentVD,
-                        onClick = onClickAction
+                    ButtonComponentManager(
+                        buttonViewData = componentVD,
+                        onClickAction = onClickAction
                     )
                 }
                 is SectionContainerViewData -> {
-                    SectionContainer().Component(
+                    SectionContainer(
                         viewData = componentVD,
                         onClick = onClickAction
                     )
                 }
                 is GroupedOptionsViewData -> {
-                    GroupedOptions().Component(
-                        viewData = componentVD,
-                        null
+                    GroupedOptions(
+                        viewData = componentVD
                     )
                 }
                 else -> {}

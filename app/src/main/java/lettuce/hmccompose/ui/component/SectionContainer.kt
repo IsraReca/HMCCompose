@@ -9,45 +9,46 @@ import lettuce.hmccompose.data.complextext.ComplexTextValueViewData
 import lettuce.hmccompose.data.complextext.ComplexTextViewData
 import lettuce.hmccompose.data.genericbutton.ButtonViewData
 import lettuce.hmccompose.data.sectioncontainer.SectionContainerViewData
-import lettuce.hmccompose.ui.adapters.ComponentAdapter
-import lettuce.hmccompose.ui.component.generics.ComposableComponent
+import lettuce.hmccompose.ui.adapters.ComponentManager
 
-class SectionContainer : ComposableComponent<SectionContainerViewData> {
-    @Composable
-    override fun Component(
-        viewData: SectionContainerViewData,
-        onClick: ((actionVD: ActionViewData?) -> Unit)?
+@Composable
+fun SectionContainer(
+    viewData: SectionContainerViewData,
+    onClick: ((actionVD: ActionViewData?) -> Unit)?
+) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(6.dp)
-        ) {
-            for (componentVD in viewData.items) {
-                ComponentAdapter.getComponentByViewData(componentVD, onClick)
-            }
+        for (componentVD in viewData.items) {
+            ComponentManager.ComponentByViewData(componentVD, onClick)
         }
     }
+}
 
-    @Preview(showBackground = true)
-    @Composable
-    override fun Preview() {
-        val previewViewData = SectionContainerViewData(
-            stylingId = "transparentSection",
-            items = listOf(
-                ComplexTextViewData(
-                    isFormSection = false,
-                    values = listOf(
-                        ComplexTextValueViewData(
-                            value = "Not sure of your car's registration?",
-                            stylingId = "cellHeaderText"
+class SectionContainerExtras {
+    companion object {
+        @Preview(showBackground = true)
+        @Composable
+        fun Preview() {
+            val previewViewData = SectionContainerViewData(
+                stylingId = "transparentSection",
+                items = listOf(
+                    ComplexTextViewData(
+                        isFormSection = false,
+                        values = listOf(
+                            ComplexTextValueViewData(
+                                value = "Not sure of your car's registration?",
+                                stylingId = "cellHeaderText"
+                            )
                         )
+                    ),
+                    ButtonViewData(
+                        title = "Search by make or model",
+                        stylingId = "primaryOutlineRoundedButton",
                     )
-                ),
-                ButtonViewData(
-                    title = "Search by make or model",
-                    stylingId = "primaryOutlineRoundedButton",
                 )
             )
-        )
-        Component(previewViewData, null)
+            SectionContainer(previewViewData, null)
+        }
     }
 }
