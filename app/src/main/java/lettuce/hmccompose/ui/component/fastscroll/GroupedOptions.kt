@@ -194,15 +194,14 @@ fun GroupedOptionsStateless(
     }
 }
 
+@Preview(showBackground = true)
+@Composable
+private fun Preview() {
+    GroupedOptions(GroupedOptionsExtras.PREVIEW_VIEWDATA)
+}
+
 class GroupedOptionsExtras {
     companion object {
-
-        @Preview(showBackground = true)
-        @Composable
-        fun GroupedOptionsPreview() {
-            GroupedOptions(PREVIEW_VIEWDATA)
-        }
-
         fun checkIfInBounds(
             size: IntSize?,
             positionX: Float,

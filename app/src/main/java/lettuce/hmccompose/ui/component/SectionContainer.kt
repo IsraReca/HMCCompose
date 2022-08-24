@@ -25,30 +25,26 @@ fun SectionContainer(
     }
 }
 
-class SectionContainerExtras {
-    companion object {
-        @Preview(showBackground = true)
-        @Composable
-        fun Preview() {
-            val previewViewData = SectionContainerViewData(
-                stylingId = "transparentSection",
-                items = listOf(
-                    ComplexTextViewData(
-                        isFormSection = false,
-                        values = listOf(
-                            ComplexTextValueViewData(
-                                value = "Not sure of your car's registration?",
-                                stylingId = "cellHeaderText"
-                            )
-                        )
-                    ),
-                    ButtonViewData(
-                        title = "Search by make or model",
-                        stylingId = "primaryOutlineRoundedButton",
+@Preview(showBackground = true)
+@Composable
+private fun Preview() {
+    val previewViewData = SectionContainerViewData(
+        stylingId = "transparentSection",
+        items = listOf(
+            ComplexTextViewData(
+                isFormSection = false,
+                values = listOf(
+                    ComplexTextValueViewData(
+                        value = "Not sure of your car's registration?",
+                        stylingId = "cellHeaderText"
                     )
                 )
+            ),
+            ButtonViewData(
+                title = "Search by make or model",
+                stylingId = "primaryOutlineRoundedButton",
             )
-            SectionContainer(previewViewData, null)
-        }
-    }
+        )
+    )
+    SectionContainer(previewViewData, null)
 }

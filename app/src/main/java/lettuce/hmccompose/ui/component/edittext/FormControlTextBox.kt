@@ -110,29 +110,25 @@ fun FormControlTextBoxComponent(
     }
 }
 
-class FormControlTextBox {
-    companion object {
-        @Preview(showBackground = true)
-        @Composable
-        fun Preview() {
-            val previewViewData = FormControlTextBoxViewData(
-                label = "What's your car's registration?",
-                placeholder = "e.g. AAA123",
-                validators = listOf(
-                    FormControlTextBoxValidatorViewData(
-                        key = "required",
-                        validationMessage = "Registration is required.",
-                        config = ".+"
-                    ),
-                    FormControlTextBoxValidatorViewData(
-                        key = "regex",
-                        validationMessage = "Please enter a valid registration",
-                        config = "^\$|^[a-zA-Z0-9- ]{1,9}\$",
-                        regex = "^\$|^[a-zA-Z0-9- ]{1,9}\$"
-                    )
-                )
+@Preview(showBackground = true)
+@Composable
+private fun Preview() {
+    val previewViewData = FormControlTextBoxViewData(
+        label = "What's your car's registration?",
+        placeholder = "e.g. AAA123",
+        validators = listOf(
+            FormControlTextBoxValidatorViewData(
+                key = "required",
+                validationMessage = "Registration is required.",
+                config = ".+"
+            ),
+            FormControlTextBoxValidatorViewData(
+                key = "regex",
+                validationMessage = "Please enter a valid registration",
+                config = "^\$|^[a-zA-Z0-9- ]{1,9}\$",
+                regex = "^\$|^[a-zA-Z0-9- ]{1,9}\$"
             )
-            FormControlTextBox(previewViewData)
-        }
-    }
+        )
+    )
+    FormControlTextBox(previewViewData)
 }

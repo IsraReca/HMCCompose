@@ -29,22 +29,17 @@ fun ComplexText(
     }
 }
 
-class ComplexTextExtras {
-    companion object {
-
-        @Preview(showBackground = true)
-        @Composable
-        fun Preview() {
-            val previewViewData = ComplexTextViewData(
-                isFormSection = false,
-                values = listOf(
-                    ComplexTextValueViewData(
-                        value = "To start selling, let's help you price your car!",
-                        stylingId = "title1Text"
-                    )
-                )
+@Preview(showBackground = true)
+@Composable
+private fun Preview() {
+    val previewViewData = ComplexTextViewData(
+        isFormSection = false,
+        values = listOf(
+            ComplexTextValueViewData(
+                value = "To start selling, let's help you price your car!",
+                stylingId = "title1Text"
             )
-            ComplexText(previewViewData, null)
-        }
-    }
+        )
+    )
+    ComplexText(previewViewData, null)
 }

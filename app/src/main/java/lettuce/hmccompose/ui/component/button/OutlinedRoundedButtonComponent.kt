@@ -42,17 +42,13 @@ fun OutlinedRoundedButtonComponent(
 }
 
 
-class OutlinedRoundedButtonExtras {
-    companion object {
-        @Preview(showBackground = true)
-        @Composable
-        fun Preview() {
-            val previewViewData = ButtonViewData(
-                title = "Search by make or model",
-                stylingId = "primaryOutlineRoundedButton",
-                actionViewData = ActionViewData("test")
-            )
-            OutlinedRoundedButtonComponent(previewViewData, null)
-        }
-    }
+@Preview(showBackground = true)
+@Composable
+private fun Preview() {
+    val previewViewData = ButtonViewData(
+        title = "Search by make or model",
+        stylingId = "primaryOutlineRoundedButton",
+        actionViewData = ActionViewData("test")
+    )
+    OutlinedRoundedButtonComponent(previewViewData, null)
 }
